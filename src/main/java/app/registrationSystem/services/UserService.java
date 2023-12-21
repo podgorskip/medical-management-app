@@ -7,10 +7,10 @@ import app.registrationSystem.jpa.entities.User;
 import app.registrationSystem.jpa.repositories.UserRepository;
 import app.registrationSystem.security.Role;
 import app.registrationSystem.utils.ValidationUtils;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.util.Objects;
 import java.util.Optional;
 
@@ -21,6 +21,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final ValidationUtils validationUtils;
 
+    @Transactional
     public Optional<User> createUser(UserDTO dto, Role role) {
 
         if (validationUtils.isUsernameUnavailable(dto.getUsername())) {
@@ -40,6 +41,7 @@ public class UserService {
         return Optional.of(userRepository.save(user));
     }
 
+    @Transactional
     public void removeUser(User user) {
         userRepository.delete(user);
     }
@@ -54,6 +56,7 @@ public class UserService {
      * @param userDTO DTO containing new credentials
      * @return ID of the updated account if successful
      */
+    @Transactional
     public Optional<Long> changeCredentials(String username, UserDTO userDTO) {
         User user = userRepository.findByUsername(username).get();
 
@@ -70,6 +73,7 @@ public class UserService {
         return Optional.of(user.getId());
     }
 
+    @Transactional
     public UpdateResponse changePassword(String username, PasswordChangeRequest passwordChangeRequest) {
         User user = findByUsername(username).get();
 
