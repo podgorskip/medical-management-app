@@ -57,20 +57,21 @@ public class UserService {
      * @return ID of the updated account if successful
      */
     @Transactional
-    public Optional<Long> changeCredentials(String username, UserDTO userDTO) {
+    public UpdateResponse changeCredentials(String username, UserDTO userDTO) {
         User user = userRepository.findByUsername(username).get();
 
         if (Objects.nonNull(userDTO.getFirstName())) { user.setFirstName(userDTO.getFirstName()); }
         if (Objects.nonNull(userDTO.getLastName())) { user.setLastName(userDTO.getLastName()); }
         if (Objects.nonNull(userDTO.getEmail())) { user.setEmail(userDTO.getEmail()); }
         if (Objects.nonNull(userDTO.getPhoneNumber())) { user.setPhoneNumber(userDTO.getPhoneNumber()); }
-        if (Objects.nonNull(userDTO.getUsername()) && !validationUtils.isUsernameUnavailable(userDTO.getUsername())) {
-            user.setUsername(userDTO.getUsername());
+        if (Objects.nonNull(userDTO.getUsername())) {
+            if (validationUtils.isUsernameUnavailable(userDTO.getUsername())) { return new UpdateResponse(false, "Provided username is already taken"); }
+            else { user.setUsername(userDTO.getUsername()); }
         }
 
         userRepository.save(user);
 
-        return Optional.of(user.getId());
+        return new UpdateResponse(true, "Successfully updated credentials");
     }
 
     @Transactional
