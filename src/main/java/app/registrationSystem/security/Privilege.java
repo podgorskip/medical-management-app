@@ -1,0 +1,6 @@
+package app.registrationSystem.security;
+
+public enum Privilege {
+    ADD_DOCTOR, ADD_ADMIN, ADD_NURSE, REMOVE_ADMIN, REMOVE_DOCTOR, REMOVE_NURSE, REMOVE_PATIENT,
+    CHANGE_CREDENTIALS, ADD_ILLNESS, CHECK_DOCTORS
+}
