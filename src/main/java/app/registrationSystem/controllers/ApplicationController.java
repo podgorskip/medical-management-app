@@ -17,9 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -41,15 +39,15 @@ public class ApplicationController {
 
     @RequiredPrivilege(value = Privilege.CHANGE_CREDENTIALS)
     @PatchMapping("/change-credentials")
-    public ResponseEntity<String> changeCredentials(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody UserDTO user) {
+    public ResponseEntity<UpdateResponse> changeCredentials(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody UserDTO user) {
 
-        Optional<Long> id = userService.changeCredentials(customUserDetails.getUsername(), user);
+        UpdateResponse updateResponse = userService.changeCredentials(customUserDetails.getUsername(), user);
 
-        if (id.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Updating credentials failed");
+        if (!updateResponse.success()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(updateResponse);
         }
 
-        return ResponseEntity.ok("Correctly updated credentials");
+        return ResponseEntity.ok(updateResponse);
     }
 
     @RequiredPrivilege(value = Privilege.CHANGE_CREDENTIALS)
