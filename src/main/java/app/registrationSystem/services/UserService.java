@@ -1,5 +1,7 @@
 package app.registrationSystem.services;
 
+import app.registrationSystem.dto.PasswordChangeRequest;
+import app.registrationSystem.dto.UpdateResponse;
 import app.registrationSystem.dto.UserDTO;
 import app.registrationSystem.jpa.entities.User;
 import app.registrationSystem.jpa.repositories.UserRepository;
@@ -66,5 +68,22 @@ public class UserService {
         userRepository.save(user);
 
         return Optional.of(user.getId());
+    }
+
+    public UpdateResponse changePassword(String username, PasswordChangeRequest passwordChangeRequest) {
+        User user = findByUsername(username).get();
+
+        if (!passwordEncoder.matches(passwordChangeRequest.oldPassword(), user.getPassword())) {
+            return new UpdateResponse(false, "Provided password doesn't match the current one");
+        }
+
+        if (passwordEncoder.matches(passwordChangeRequest.newPassword(), user.getPassword())) {
+            return new UpdateResponse(false, "New password cannot be the same as the old one");
+        }
+
+        user.setPassword(passwordEncoder.encode(passwordChangeRequest.newPassword()));
+        userRepository.save(user);
+
+        return new UpdateResponse(true, "Successfully updated the password");
     }
 }
