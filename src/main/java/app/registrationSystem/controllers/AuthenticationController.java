@@ -4,6 +4,7 @@ import app.registrationSystem.dto.AuthenticationRequest;
 import app.registrationSystem.security.CustomUserDetails;
 import app.registrationSystem.security.CustomUserDetailsService;
 import app.registrationSystem.security.JwtUtils;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,7 @@ public class AuthenticationController {
     private final JwtUtils jwtUtils;
 
     @PostMapping("/auth/authenticate")
-    public ResponseEntity<String> authenticate(@RequestBody AuthenticationRequest authenticationDTO) {
+    public ResponseEntity<String> authenticate(@RequestBody @Valid AuthenticationRequest authenticationDTO) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationDTO.username(), authenticationDTO.password()));
 
         CustomUserDetails customUserDetails = customUserDetailsService.loadUserByUsername(authenticationDTO.username());
