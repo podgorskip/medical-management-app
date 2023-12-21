@@ -1,6 +1,6 @@
 package app.registrationSystem.controllers;
 
-import app.registrationSystem.dto.AuthenticationDTO;
+import app.registrationSystem.dto.AuthenticationRequest;
 import app.registrationSystem.security.CustomUserDetails;
 import app.registrationSystem.security.CustomUserDetailsService;
 import app.registrationSystem.security.JwtUtils;
@@ -21,7 +21,7 @@ public class AuthenticationController {
     private final JwtUtils jwtUtils;
 
     @PostMapping("/auth/authenticate")
-    public ResponseEntity<String> authenticate(@RequestBody AuthenticationDTO authenticationDTO) {
+    public ResponseEntity<String> authenticate(@RequestBody AuthenticationRequest authenticationDTO) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationDTO.username(), authenticationDTO.password()));
 
         CustomUserDetails customUserDetails = customUserDetailsService.loadUserByUsername(authenticationDTO.username());
