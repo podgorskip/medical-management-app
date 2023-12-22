@@ -2,6 +2,7 @@ package app.registrationSystem.controllers;
 
 import app.registrationSystem.dto.IllnessesDTO;
 import app.registrationSystem.dto.PatientDTO;
+import app.registrationSystem.dto.Response;
 import app.registrationSystem.jpa.entities.Doctor;
 import app.registrationSystem.security.CustomUserDetails;
 import app.registrationSystem.security.Privilege;
@@ -27,29 +28,17 @@ public class PatientController {
 
     @Transactional
     @PostMapping("/auth/register")
-    public ResponseEntity<String> register(@Valid @RequestBody PatientDTO patientDTO) {
-
-        Optional<Long> id = patientService.addPatient(patientDTO);
-
-        if (id.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Username: " + patientDTO.getUsername() + " is already taken");
-        }
-
-        return ResponseEntity.ok("Correctly added an user of id: " + id);
+    public ResponseEntity<Response> register(@Valid @RequestBody PatientDTO patientDTO) {
+        Response response = patientService.addPatient(patientDTO);
+        return ResponseEntity.status(response.httpStatus()).body(response);
     }
 
     @Transactional
     @RequiredPrivilege(value = Privilege.ADD_ILLNESS)
     @PostMapping("/add-illnesses/{username}")
-    public ResponseEntity<String> addIllnesses(@PathVariable("username") String username, @RequestBody IllnessesDTO illnesses) {
-
-        Optional<Long> id = patientService.addIllnesses(username, illnesses.getIllnesses());
-
-        if (id.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No user of username: " + username + " found");
-        }
-
-        return ResponseEntity.ok("Correctly added illnesses to user of username: " + username);
+    public ResponseEntity<Response> addIllnesses(@PathVariable("username") String username, @RequestBody IllnessesDTO illnesses) {
+        Response response = patientService.addIllnesses(username, illnesses.getIllnesses());
+        return ResponseEntity.status(response.httpStatus()).body(response);
     }
 
     @RequiredPrivilege(value = Privilege.CHECK_DOCTORS)
