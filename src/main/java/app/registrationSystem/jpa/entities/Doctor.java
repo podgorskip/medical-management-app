@@ -7,6 +7,8 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Table(name = "doctor", schema = "registration_system")
 @Data
@@ -27,4 +29,7 @@ public class Doctor {
     @ManyToOne
     @JoinColumn(name = "specialization_id")
     private Specialization specialization;
+
+    @OneToMany(mappedBy = "doctor")
+    private List<Doctor> doctors;
 }
