@@ -1,12 +1,14 @@
 package app.registrationSystem.services;
 
 import app.registrationSystem.dto.DoctorDTO;
+import app.registrationSystem.dto.Response;
 import app.registrationSystem.jpa.entities.Doctor;
 import app.registrationSystem.jpa.entities.User;
 import app.registrationSystem.jpa.repositories.DoctorRepository;
 import app.registrationSystem.security.Role;
-import app.registrationSystem.utils.ValidationUtils;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
@@ -17,7 +19,6 @@ public class DoctorService {
     private final DoctorRepository doctorRepository;
     private final UserService userService;
     private final SpecializationService specializationService;
-    private final ValidationUtils validationUtils;
 
     /**
      * Retrieves doctors by their ID
@@ -31,31 +32,35 @@ public class DoctorService {
     /**
      * Removes the doctor's account
      * @param id ID of the doctor to have the account removed
-     * @return ID of the removed account if successful
+     * @return response with status of the performed action
      */
-    public Optional<Long> removeDoctor(Long id) {
+    @Transactional
+    public Response removeDoctor(Long id) {
         Optional<Doctor> doctor = getById(id);
 
         if (doctor.isEmpty()) {
-            return Optional.empty();
+            return new Response(false, HttpStatus.NOT_FOUND, "User of the provided username not found");
         }
 
         userService.removeUser(doctor.get().getUser());
         doctorRepository.delete(doctor.get());
 
-        return Optional.of(id);
+        return new Response(true, HttpStatus.OK, "Correctly removed the doctor account");
     }
 
     /**
      * Creates a new doctor account
      * @param doctorDTO DTO containing info about the doctor
-     * @return doctor ID if added successfully
+     * @return response with status of the performed action
      */
-    public Optional<Long> addDoctor(DoctorDTO doctorDTO) {
+    @Transactional
+    public Response addDoctor(DoctorDTO doctorDTO) {
 
         Optional<User> user = userService.createUser(doctorDTO, Role.DOCTOR);
 
-        if (user.isEmpty()) return Optional.empty();
+        if (user.isEmpty()) {
+            return new Response(false, HttpStatus.CONFLICT, "Provided username is already taken");
+        }
 
         Doctor doctor = new Doctor();
         doctor.setUser(user.get());
@@ -64,9 +69,13 @@ public class DoctorService {
             doctor.setSpecialization(specializationService.getById(doctorDTO.getSpecialization()).get());
         }
 
-        return Optional.of(doctorRepository.save(doctor).getId());
+        return new Response(true, HttpStatus.OK, "Correctly created a patient account");
     }
 
+    /**
+     * Returns all the available doctors
+     * @return list containing available doctors
+     */
     public List<Doctor> getAll() {
         return doctorRepository.findAll();
     }
