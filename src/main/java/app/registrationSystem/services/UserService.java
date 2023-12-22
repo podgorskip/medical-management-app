@@ -1,7 +1,7 @@
 package app.registrationSystem.services;
 
 import app.registrationSystem.dto.PasswordChangeRequest;
-import app.registrationSystem.dto.UpdateResponse;
+import app.registrationSystem.dto.Response;
 import app.registrationSystem.dto.UserDTO;
 import app.registrationSystem.jpa.entities.User;
 import app.registrationSystem.jpa.repositories.UserRepository;
@@ -9,6 +9,7 @@ import app.registrationSystem.security.Role;
 import app.registrationSystem.utils.ValidationUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.Objects;
@@ -57,7 +58,7 @@ public class UserService {
      * @return ID of the updated account if successful
      */
     @Transactional
-    public UpdateResponse changeCredentials(String username, UserDTO userDTO) {
+    public Response changeCredentials(String username, UserDTO userDTO) {
         User user = userRepository.findByUsername(username).get();
 
         if (Objects.nonNull(userDTO.getFirstName())) { user.setFirstName(userDTO.getFirstName()); }
@@ -65,30 +66,30 @@ public class UserService {
         if (Objects.nonNull(userDTO.getEmail())) { user.setEmail(userDTO.getEmail()); }
         if (Objects.nonNull(userDTO.getPhoneNumber())) { user.setPhoneNumber(userDTO.getPhoneNumber()); }
         if (Objects.nonNull(userDTO.getUsername())) {
-            if (validationUtils.isUsernameUnavailable(userDTO.getUsername())) { return new UpdateResponse(false, "Provided username is already taken"); }
+            if (validationUtils.isUsernameUnavailable(userDTO.getUsername())) { return new Response(false, HttpStatus.CONFLICT, "Provided username is already taken"); }
             else { user.setUsername(userDTO.getUsername()); }
         }
 
         userRepository.save(user);
 
-        return new UpdateResponse(true, "Successfully updated credentials");
+        return new Response(true, HttpStatus.OK,"Successfully updated credentials");
     }
 
     @Transactional
-    public UpdateResponse changePassword(String username, PasswordChangeRequest passwordChangeRequest) {
+    public Response changePassword(String username, PasswordChangeRequest passwordChangeRequest) {
         User user = findByUsername(username).get();
 
         if (!passwordEncoder.matches(passwordChangeRequest.oldPassword(), user.getPassword())) {
-            return new UpdateResponse(false, "Provided password doesn't match the current one");
+            return new Response(false, HttpStatus.CONFLICT, "Provided password doesn't match the current one");
         }
 
         if (passwordEncoder.matches(passwordChangeRequest.newPassword(), user.getPassword())) {
-            return new UpdateResponse(false, "New password cannot be the same as the old one");
+            return new Response(false, HttpStatus.CONFLICT,"New password cannot be the same as the old one");
         }
 
         user.setPassword(passwordEncoder.encode(passwordChangeRequest.newPassword()));
         userRepository.save(user);
 
-        return new UpdateResponse(true, "Successfully updated the password");
+        return new Response(true, HttpStatus.OK, "Successfully updated the password");
     }
 }
