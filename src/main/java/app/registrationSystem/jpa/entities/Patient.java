@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
+
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -32,4 +34,7 @@ public class Patient {
             inverseJoinColumns = {@JoinColumn(name = "illness_id")}
     )
     private Set<Illness> illnesses;
+
+    @OneToMany(mappedBy = "patient")
+    private List<ScheduledVisit> scheduledVisits;
 }
