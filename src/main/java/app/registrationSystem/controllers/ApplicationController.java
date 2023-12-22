@@ -32,6 +32,7 @@ public class ApplicationController {
         return illnessService.getAll();
     }
 
+    @RequiredPrivilege(value = Privilege.CHECK_SPECIALIZATIONS)
     @GetMapping("/specializations")
     public List<Specialization> getAllSpecializations() {
         return specializationService.getAll();
