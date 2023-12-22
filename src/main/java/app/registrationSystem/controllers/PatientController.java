@@ -26,14 +26,12 @@ public class PatientController {
     private final PatientService patientService;
     private final DoctorService doctorService;
 
-    @Transactional
     @PostMapping("/auth/register")
     public ResponseEntity<Response> register(@Valid @RequestBody PatientDTO patientDTO) {
         Response response = patientService.addPatient(patientDTO);
         return ResponseEntity.status(response.httpStatus()).body(response);
     }
 
-    @Transactional
     @RequiredPrivilege(value = Privilege.ADD_ILLNESS)
     @PostMapping("/add-illnesses/{username}")
     public ResponseEntity<Response> addIllnesses(@PathVariable("username") String username, @RequestBody IllnessesDTO illnesses) {
