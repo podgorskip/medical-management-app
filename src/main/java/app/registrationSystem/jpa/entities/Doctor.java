@@ -31,5 +31,8 @@ public class Doctor {
     private Specialization specialization;
 
     @OneToMany(mappedBy = "doctor")
-    private List<Doctor> doctors;
+    private List<ScheduledVisit> scheduledVisits;
+
+    @OneToMany(mappedBy = "doctor")
+    private List<AvailableVisit> availableVisits;
 }

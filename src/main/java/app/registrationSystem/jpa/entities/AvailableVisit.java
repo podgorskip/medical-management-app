@@ -24,4 +24,8 @@ public class AvailableVisit {
     private Date date;
 
     private int duration;
+
+    @ManyToOne
+    @JoinColumn(name = "doctor_id")
+    private Doctor doctor;
 }
