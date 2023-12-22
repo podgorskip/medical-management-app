@@ -17,8 +17,8 @@ public class RestExceptionHandler {
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ResponseEntity<ErrorResponse> handleConstraintViolationException(MethodArgumentNotValidException e) {
 
-        String message = "Invalid due to validation error: " + e.getMessage();
-        log.error(message);
+        String message = "Invalid due to validation error related to the parameter: " + e.getParameter();
+        log.warn(message);
 
         return new ResponseEntity<>(new ErrorResponse(HttpStatus.BAD_REQUEST, message), HttpStatus.BAD_REQUEST);
     }
@@ -28,7 +28,7 @@ public class RestExceptionHandler {
     public ResponseEntity<ErrorResponse> handleUnauthorizedException(UnauthorizedException e) {
 
         String message = "Invalid due to validation error: " + e.getMessage();
-        log.error(message);
+        log.warn(message);
 
         return new ResponseEntity<>(new ErrorResponse(HttpStatus.FORBIDDEN, message), HttpStatus.FORBIDDEN);
     }
