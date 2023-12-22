@@ -1,6 +1,7 @@
 package app.registrationSystem.services;
 
 import app.registrationSystem.dto.PatientDTO;
+import app.registrationSystem.dto.Response;
 import app.registrationSystem.jpa.entities.Illness;
 import app.registrationSystem.jpa.entities.Patient;
 import app.registrationSystem.jpa.entities.User;
@@ -8,9 +9,11 @@ import app.registrationSystem.jpa.repositories.IllnessRepository;
 import app.registrationSystem.jpa.repositories.PatientRepository;
 import app.registrationSystem.security.Role;
 import app.registrationSystem.utils.ValidationUtils;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
 import java.util.Set;
@@ -22,24 +25,27 @@ public class PatientService {
     private final UserService userService;
     private final PatientRepository patientRepository;
     private final IllnessRepository illnessRepository;
-    private final ValidationUtils validationUtils;
-    private static final Logger log = LogManager.getLogger(PatientService.class);
 
     /**
      * Creates a new patient account
      * @param patientDTO DTO containing info about the patient
-     * @return patient ID if added successfully
+     * @return response with status of the performed action
      */
-    public Optional<Long> addPatient(PatientDTO patientDTO) {
+    @Transactional
+    public Response addPatient(PatientDTO patientDTO) {
 
         Optional<User> user = userService.createUser(patientDTO, Role.PATIENT);
 
-        if (user.isEmpty()) return Optional.empty();
+        if (user.isEmpty()) {
+            return new Response(false, HttpStatus.CONFLICT, "Provided username is already taken");
+        }
 
         Patient patient = new Patient();
         patient.setUser(user.get());
 
-        return Optional.of(patientRepository.save(patient).getId());
+        patientRepository.save(patient);
+
+        return addIllnesses(patientDTO.getUsername(), patientDTO.getIllnesses());
     }
 
     /**
@@ -69,33 +75,34 @@ public class PatientService {
     /**
      * Removes the patient's account
      * @param id id of the patient to have the account removed
-     * @return ID of the removed account if successful
+     * @return response with status of the performed action
      */
-    public Optional<Long> removePatient(Long id) {
+    @Transactional
+    public Response removePatient(Long id) {
         Optional<Patient> patient = getById(id);
 
         if (patient.isEmpty()) {
-            return Optional.empty();
+            return new Response(false, HttpStatus.NOT_FOUND, "User of the provided username not found");
         }
 
         userService.removeUser(patient.get().getUser());
         patientRepository.delete(patient.get());
 
-        return Optional.of(id);
+        return new Response(true, HttpStatus.OK, "Correctly removed the patient account");
     }
 
     /**
      * Adds illnesses to the Patient object
      * @param username username of the patient to have illnesses added
      * @param illnesses set of illnesses' id
-     * @return ID of the patient if added successfully
+     * @return response with status of the performed action
      */
-    public Optional<Long> addIllnesses(String username, Set<Long> illnesses) {
+    @Transactional
+    public Response addIllnesses(String username, Set<Long> illnesses) {
         Optional<Patient> optionalPatient = getByUsername(username);
 
         if (optionalPatient.isEmpty()) {
-            log.info("No user of the username {} found", username);
-            return Optional.empty();
+            return new Response(false, HttpStatus.NOT_FOUND, "No user of the provided username found");
         }
 
         Patient patient = optionalPatient.get();
@@ -109,6 +116,8 @@ public class PatientService {
         if (patient.getIllnesses() == null) { patient.setIllnesses(mappedIllnesses); }
         else { patient.getIllnesses().addAll(mappedIllnesses); }
 
-        return Optional.of(patientRepository.save(patient).getId());
+        patientRepository.save(patient).getId();
+
+        return new Response(true, HttpStatus.OK, "Correctly assigned illnesses to the patient account");
     }
 }
