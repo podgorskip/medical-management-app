@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "available_visit", schema = "registration_system")
@@ -21,7 +21,7 @@ public class AvailableVisit {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Date date;
+    private LocalDateTime date;
 
     private int duration;
 

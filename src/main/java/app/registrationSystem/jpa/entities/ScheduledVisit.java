@@ -2,7 +2,7 @@ package app.registrationSystem.jpa.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "scheduled_visit", schema = "registration_system")
@@ -20,7 +20,7 @@ public class ScheduledVisit {
     @JoinColumn(name = "doctor_id")
     private Doctor doctor;
 
-    private Date date;
+    private LocalDateTime date;
 
     private int duration;
 
