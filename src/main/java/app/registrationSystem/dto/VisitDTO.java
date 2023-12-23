@@ -1,10 +1,12 @@
 package app.registrationSystem.dto;
 
 import lombok.Data;
-import java.util.Date;
-import java.util.List;
+import lombok.NoArgsConstructor;
+import java.time.LocalDateTime;
 
 @Data
-public class VisitsDTO {
-    private List<Date> dates;
+@NoArgsConstructor
+public class VisitDTO {
+    private LocalDateTime date;
+    private int duration;
 }
