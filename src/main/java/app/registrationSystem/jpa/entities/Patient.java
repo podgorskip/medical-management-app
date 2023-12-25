@@ -27,7 +27,7 @@ public class Patient {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
             name = "patient_illness",
             joinColumns = {@JoinColumn(name = "patient_id")},
