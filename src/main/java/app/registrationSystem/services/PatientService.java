@@ -2,21 +2,15 @@ package app.registrationSystem.services;
 
 import app.registrationSystem.dto.PatientDTO;
 import app.registrationSystem.dto.Response;
-import app.registrationSystem.jpa.entities.Illness;
-import app.registrationSystem.jpa.entities.Patient;
-import app.registrationSystem.jpa.entities.User;
+import app.registrationSystem.jpa.entities.*;
 import app.registrationSystem.jpa.repositories.IllnessRepository;
 import app.registrationSystem.jpa.repositories.PatientRepository;
 import app.registrationSystem.security.Role;
-import app.registrationSystem.utils.ValidationUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,6 +19,8 @@ public class PatientService {
     private final UserService userService;
     private final PatientRepository patientRepository;
     private final IllnessRepository illnessRepository;
+    private final DoctorService doctorService;
+    private final VisitService visitService;
 
     /**
      * Creates a new patient account
@@ -119,5 +115,19 @@ public class PatientService {
         patientRepository.save(patient).getId();
 
         return new Response(true, HttpStatus.OK, "Correctly assigned illnesses to the patient account");
+    }
+
+    /**
+     * Returns available visits for the illnesses added to the account
+     * @param username username of the user for whom available visits are checked
+     * @return response with status of the performed action
+     */
+    public Map<String, List<AvailableVisit>> checkVisitRecommendations(String username) {
+
+        Set<Illness> illnesses = getByUsername(username).get().getIllnesses();
+
+        return illnesses.stream()
+                .collect(Collectors.toMap(Illness::getName, illness -> visitService.getAvailableVisits(illness.getName())));
+
     }
 }
