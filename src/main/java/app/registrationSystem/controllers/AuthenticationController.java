@@ -1,9 +1,12 @@
 package app.registrationSystem.controllers;
 
 import app.registrationSystem.dto.AuthenticationRequest;
+import app.registrationSystem.dto.PatientDTO;
+import app.registrationSystem.dto.Response;
 import app.registrationSystem.security.CustomUserDetails;
 import app.registrationSystem.security.CustomUserDetailsService;
 import app.registrationSystem.security.JwtUtils;
+import app.registrationSystem.services.PatientService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,6 +22,7 @@ import java.util.Objects;
 public class AuthenticationController {
     private final AuthenticationManager authenticationManager;
     private final CustomUserDetailsService customUserDetailsService;
+    private final PatientService patientService;
     private final JwtUtils jwtUtils;
 
     @PostMapping("/auth/authenticate")
@@ -32,6 +36,12 @@ public class AuthenticationController {
         }
 
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Authentication unsuccessful");
+    }
+
+    @PostMapping("/auth/register")
+    public ResponseEntity<Response> register(@Valid @RequestBody PatientDTO patientDTO) {
+        Response response = patientService.addPatient(patientDTO);
+        return ResponseEntity.status(response.httpStatus()).body(response);
     }
 
 }

@@ -25,6 +25,6 @@ public class ScheduledVisit {
     private int duration;
 
     @ManyToOne
-    @JoinColumn(name = "illness_id")
-    private Illness illness;
+    @JoinColumn(name = "specialization_id")
+    private Specialization specialization;
 }

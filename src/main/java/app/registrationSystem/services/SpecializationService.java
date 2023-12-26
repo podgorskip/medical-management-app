@@ -20,4 +20,8 @@ public class SpecializationService {
     public Optional<Specialization> getById(Long id) {
         return specializationRepository.findById(id);
     }
+
+    public Optional<Specialization> getByName(String name) {
+        return specializationRepository.findByName(name);
+    }
 }

@@ -3,10 +3,7 @@ package app.registrationSystem.services;
 import app.registrationSystem.dto.DoctorDTO;
 import app.registrationSystem.dto.Response;
 import app.registrationSystem.dto.VisitDTO;
-import app.registrationSystem.jpa.entities.AvailableVisit;
-import app.registrationSystem.jpa.entities.Doctor;
-import app.registrationSystem.jpa.entities.Specialization;
-import app.registrationSystem.jpa.entities.User;
+import app.registrationSystem.jpa.entities.*;
 import app.registrationSystem.jpa.repositories.DoctorRepository;
 import app.registrationSystem.security.Role;
 import jakarta.transaction.Transactional;
@@ -14,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,6 +21,7 @@ public class DoctorService {
     private final DoctorRepository doctorRepository;
     private final UserService userService;
     private final SpecializationService specializationService;
+    private final IllnessService illnessService;
 
     /**
      * Retrieves doctors by their ID
@@ -128,5 +127,44 @@ public class DoctorService {
      */
     public Optional<List<Doctor>> getBySpecialization(Specialization specialization) {
         return doctorRepository.findBySpecialization(specialization);
+    }
+
+    /**
+     * Returns a list containing scheduled visits for the account of the provided username
+     * @param username username of the account to have scheduled visits checked
+     * @return a list containing scheduled visits
+     */
+    public List<ScheduledVisit> checkScheduledVisits(String username) {
+        return getByUsername(username).get().getScheduledVisits();
+    }
+
+    /**
+     * Returns all the doctors that have the specialization named as the parameter
+     * @param specializationName specialization name on which doctors are filetered
+     * @return list of Doctor instances if are present
+     */
+    public Optional<List<Doctor>> getBySpecialization(String specializationName) {
+        Optional<Specialization> specialization = specializationService.getByName(specializationName);
+
+        if (specialization.isPresent()) {
+            return getBySpecialization(specialization.get());
+        }
+
+       return Optional.empty();
+    }
+
+    /**
+     * Returns all the doctors that have the specialization needed for the provided illness
+     * @param illnessName illness name for which doctors should be found
+     * @return list of Doctor instances if are present
+     */
+    public Optional<List<Doctor>> getByIllness(String illnessName) {
+        Optional<Illness> illness = illnessService.getByName(illnessName);
+
+        if (illness.isPresent()) {
+            return getBySpecialization(illness.get().getSpecialization());
+        }
+
+        return Optional.empty();
     }
 }

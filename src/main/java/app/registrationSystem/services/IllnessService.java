@@ -11,7 +11,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class IllnessService {
     private final IllnessRepository illnessRepository;
-    private final DoctorService doctorService;
 
     public List<Illness> getAll() {
         return illnessRepository.findAll();
@@ -19,5 +18,9 @@ public class IllnessService {
 
     public Optional<Illness> getByName(String illnessName) {
         return illnessRepository.findByName(illnessName);
+    }
+
+    public Optional<Illness> getById(Long id) {
+        return illnessRepository.findById(id);
     }
 }

@@ -3,7 +3,6 @@ package app.registrationSystem.services;
 import app.registrationSystem.dto.PatientDTO;
 import app.registrationSystem.dto.Response;
 import app.registrationSystem.jpa.entities.*;
-import app.registrationSystem.jpa.repositories.IllnessRepository;
 import app.registrationSystem.jpa.repositories.PatientRepository;
 import app.registrationSystem.security.Role;
 import jakarta.transaction.Transactional;
@@ -18,8 +17,7 @@ import java.util.stream.Collectors;
 public class PatientService {
     private final UserService userService;
     private final PatientRepository patientRepository;
-    private final IllnessRepository illnessRepository;
-    private final DoctorService doctorService;
+    private final IllnessService illnessService;
     private final VisitService visitService;
 
     /**
@@ -104,7 +102,7 @@ public class PatientService {
         Patient patient = optionalPatient.get();
 
         Set<Illness> mappedIllnesses = illnesses.stream()
-                .map(illnessRepository::findById)
+                .map(illnessService::getById)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toSet());
@@ -127,7 +125,40 @@ public class PatientService {
         Set<Illness> illnesses = getByUsername(username).get().getIllnesses();
 
         return illnesses.stream()
-                .collect(Collectors.toMap(Illness::getName, illness -> visitService.getAvailableVisits(illness.getName())));
+                .collect(Collectors.toMap(Illness::getName, illness -> visitService.getAvailableVisits(illness.getName()).get()));
 
+    }
+
+    @Transactional
+    public Response scheduleVisit(Long visitID, String username) {
+        Optional<AvailableVisit> optionalAvailableVisit = visitService.getAvailableVisit(visitID);
+
+        if (optionalAvailableVisit.isEmpty()) {
+            return new Response(false, HttpStatus.NOT_FOUND, "No available visit of the id " + visitID + " found");
+        }
+
+        AvailableVisit availableVisit = optionalAvailableVisit.get();
+
+        ScheduledVisit scheduledVisit = new ScheduledVisit();
+        scheduledVisit.setPatient(getByUsername(username).get());
+        scheduledVisit.setDate(availableVisit.getDate());
+        scheduledVisit.setDoctor(availableVisit.getDoctor());
+        scheduledVisit.setDuration(availableVisit.getDuration());
+        scheduledVisit.setSpecialization(availableVisit.getDoctor().getSpecialization());
+
+        visitService.scheduleVisit(scheduledVisit);
+        visitService.deleteAvailableVisit(availableVisit);
+
+        return new Response(true, HttpStatus.OK, "Correctly scheduled visit for " + scheduledVisit.getDate() +
+                ", which will take up to " + scheduledVisit.getDuration() + " minutes");
+    }
+
+    /**
+     * Returns list of scheduled visits for the user of the provided username
+     * @param username username of the user to have scheduled visits returned
+     * @return list of scheduled visits
+     */
+    public List<ScheduledVisit> checkScheduledVisits(String username) {
+        return getByUsername(username).get().getScheduledVisits();
     }
 }
