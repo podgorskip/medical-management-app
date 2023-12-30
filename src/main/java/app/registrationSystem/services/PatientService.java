@@ -9,6 +9,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -19,6 +20,7 @@ public class PatientService {
     private final PatientRepository patientRepository;
     private final IllnessService illnessService;
     private final VisitService visitService;
+    private final MailSenderService mailSenderService;
 
     /**
      * Creates a new patient account
@@ -143,9 +145,10 @@ public class PatientService {
         }
 
         AvailableVisit availableVisit = optionalAvailableVisit.get();
-
         ScheduledVisit scheduledVisit = new ScheduledVisit();
-        scheduledVisit.setPatient(getByUsername(username).get());
+        Patient patient = getByUsername(username).get();
+
+        scheduledVisit.setPatient(patient);
         scheduledVisit.setDate(availableVisit.getDate());
         scheduledVisit.setDoctor(availableVisit.getDoctor());
         scheduledVisit.setDuration(availableVisit.getDuration());
@@ -154,8 +157,13 @@ public class PatientService {
         visitService.scheduleVisit(scheduledVisit);
         visitService.deleteAvailableVisit(availableVisit);
 
-        return new Response(true, HttpStatus.OK, "Correctly scheduled visit for " + scheduledVisit.getDate() +
-                ", which will take up to " + scheduledVisit.getDuration() + " minutes");
+        String message = "Successfully scheduled visit to " + availableVisit.getDoctor().getUser().fullName() +
+                        "for " + new SimpleDateFormat("yyyy-MM-dd hh:mm").format(availableVisit.getDate()) +
+                        "\nThe visit will take approximately " + availableVisit.getDuration() + " minutes";
+
+        mailSenderService.sendNewMail(patient.getUser().getEmail(), "New visit scheduled", message);
+
+        return new Response(true, HttpStatus.OK, message);
     }
 
     /**
