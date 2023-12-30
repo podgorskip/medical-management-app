@@ -69,7 +69,7 @@ public class PatientController {
     }
 
     @RequiredPrivilege(value = Privilege.SCHEDULE_VISIT)
-    @GetMapping("scheduled-visits")
+    @GetMapping("/scheduled-visits")
     public ResponseEntity<List<ScheduledVisit>> checkScheduledVisits(@AuthenticationPrincipal CustomUserDetails CustomUserDetails) {
         return ResponseEntity.status(HttpStatus.OK).body(patientService.checkScheduledVisits(CustomUserDetails.getUsername()));
     }
