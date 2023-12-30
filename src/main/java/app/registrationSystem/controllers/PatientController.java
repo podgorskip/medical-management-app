@@ -75,7 +75,7 @@ public class PatientController {
     }
 
     @RequiredPrivilege(value = Privilege.CHECK_DOCTORS)
-    @GetMapping("/doctors/{specialization}")
+    @GetMapping("/doctors-by-specialization/{specialization}")
     public ResponseEntity<List<Doctor>> checkDoctorsBySpecialization(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable("specialization") String specialization) {
         Optional<List<Doctor>> doctors = doctorService.getBySpecialization(specialization);
 
@@ -87,7 +87,7 @@ public class PatientController {
     }
 
     @RequiredPrivilege(value = Privilege.CHECK_DOCTORS)
-    @GetMapping("/doctors/{illness}")
+    @GetMapping("/doctors-by-illness/{illness}")
     public ResponseEntity<List<Doctor>> checkDoctorsByIllness(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable("illness") String illness) {
         Optional<List<Doctor>> doctors = doctorService.getByIllness(illness);
 
