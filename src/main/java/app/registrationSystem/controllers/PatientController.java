@@ -97,9 +97,5 @@ public class PatientController {
 
         return ResponseEntity.status(HttpStatus.OK).body(doctors.get());
     }
-
-    // check doctors by illness
-    // check doctors by specialization
-
-
+    
 }
