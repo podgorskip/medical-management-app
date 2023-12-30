@@ -121,7 +121,6 @@ public class PatientService {
      * @return response with status of the performed action
      */
     public Map<String, List<AvailableVisit>> checkVisitRecommendations(String username) {
-
         Set<Illness> illnesses = getByUsername(username).get().getIllnesses();
 
         return illnesses.stream()
@@ -129,6 +128,12 @@ public class PatientService {
 
     }
 
+    /**
+     * Allows to schedule a visit
+     * @param visitID ID of the available to be set as scheduled
+     * @param username username of the user to have the visit scheduled
+     * @return response with status of the performed action
+     */
     @Transactional
     public Response scheduleVisit(Long visitID, String username) {
         Optional<AvailableVisit> optionalAvailableVisit = visitService.getAvailableVisit(visitID);
