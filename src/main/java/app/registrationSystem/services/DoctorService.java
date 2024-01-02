@@ -71,7 +71,9 @@ public class DoctorService {
             doctor.setSpecialization(specializationService.getById(doctorDTO.getSpecialization()).get());
         }
 
-        return new Response(true, HttpStatus.OK, "Correctly created a patient account");
+        doctorRepository.save(doctor);
+
+        return new Response(true, HttpStatus.OK, "Correctly created a doctor account");
     }
 
     /**
