@@ -5,9 +5,13 @@ import app.registrationSystem.security.CustomUserDetailsService;
 import app.registrationSystem.security.JwtFilter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.*;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -23,6 +27,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import javax.sql.DataSource;
+import java.util.Properties;
 
 @Configuration
 @EnableWebSecurity
@@ -79,5 +86,17 @@ public class Config {
                 registry.addInterceptor(interceptor);
             }
         };
+    }
+
+    @Bean
+    @Profile("test")
+    public DataSource dataSource() {
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setDriverClassName("org.h2.Driver");
+        dataSource.setUrl("jdbc:h2:mem:db;DB_CLOSE_DELAY=-1");
+        dataSource.setUsername("sa");
+        dataSource.setPassword("sa");
+
+        return dataSource;
     }
 }

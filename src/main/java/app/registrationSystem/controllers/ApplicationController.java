@@ -1,8 +1,12 @@
 package app.registrationSystem.controllers;
 
-import app.registrationSystem.dto.PasswordChangeRequest;
-import app.registrationSystem.dto.Response;
-import app.registrationSystem.dto.UserDTO;
+import app.registrationSystem.dto.mappers.IllnessMapper;
+import app.registrationSystem.dto.mappers.SpecializationMapper;
+import app.registrationSystem.dto.request.PasswordChangeRequest;
+import app.registrationSystem.dto.response.IllnessResponse;
+import app.registrationSystem.dto.response.Response;
+import app.registrationSystem.dto.request.UserRegistrationRequest;
+import app.registrationSystem.dto.response.SpecializationResponse;
 import app.registrationSystem.jpa.entities.Illness;
 import app.registrationSystem.jpa.entities.Specialization;
 import app.registrationSystem.security.CustomUserDetails;
@@ -28,19 +32,19 @@ public class ApplicationController {
     private final UserService userService;
 
     @GetMapping("/auth/illnesses")
-    public ResponseEntity<List<Illness>> getAllIllnesses() {
-        return ResponseEntity.status(HttpStatus.OK).body(illnessService.getAll());
+    public ResponseEntity<List<IllnessResponse>> getAllIllnesses() {
+        return ResponseEntity.status(HttpStatus.OK).body(illnessService.getAll().stream().map(IllnessMapper.INSTANCE::convert).toList());
     }
 
     @RequiredPrivilege(value = Privilege.CHECK_SPECIALIZATIONS)
     @GetMapping("/specializations")
-    public ResponseEntity<List<Specialization>> getAllSpecializations() {
-        return ResponseEntity.status(HttpStatus.OK).body(specializationService.getAll());
+    public ResponseEntity<List<SpecializationResponse>> getAllSpecializations() {
+        return ResponseEntity.status(HttpStatus.OK).body(specializationService.getAll().stream().map(SpecializationMapper.INSTANCE::convert).toList());
     }
 
     @RequiredPrivilege(value = Privilege.CHANGE_CREDENTIALS)
     @PatchMapping("/change-credentials")
-    public ResponseEntity<Response> changeCredentials(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody UserDTO user) {
+    public ResponseEntity<Response> changeCredentials(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody UserRegistrationRequest user) {
         Response response = userService.changeCredentials(customUserDetails.getUsername(), user);
         return ResponseEntity.status(response.httpStatus()).body(response);
     }

@@ -1,11 +1,11 @@
-package app.registrationSystem.dto;
+package app.registrationSystem.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class UserDTO {
+public class UserRegistrationRequest {
     @NotBlank(message = "First name cannot be empty")
     private String firstName;
 

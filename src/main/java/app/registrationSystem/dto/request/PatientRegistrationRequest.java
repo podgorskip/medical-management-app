@@ -1,15 +1,15 @@
-package app.registrationSystem.dto;
+package app.registrationSystem.dto.request;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import java.util.Set;
 
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class DoctorDTO extends UserDTO {
-    private Long specialization;
+public class PatientRegistrationRequest extends UserRegistrationRequest {
+    private Set<Long> illnesses;
 }

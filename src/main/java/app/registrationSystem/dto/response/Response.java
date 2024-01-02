@@ -1,4 +1,4 @@
-package app.registrationSystem.dto;
+package app.registrationSystem.dto.response;
 
 import org.springframework.http.HttpStatus;
 

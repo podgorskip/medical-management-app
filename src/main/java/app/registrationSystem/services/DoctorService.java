@@ -1,8 +1,8 @@
 package app.registrationSystem.services;
 
-import app.registrationSystem.dto.DoctorDTO;
-import app.registrationSystem.dto.Response;
-import app.registrationSystem.dto.VisitDTO;
+import app.registrationSystem.dto.request.DoctorRegistrationRequest;
+import app.registrationSystem.dto.response.Response;
+import app.registrationSystem.dto.request.VisitRequest;
 import app.registrationSystem.jpa.entities.*;
 import app.registrationSystem.jpa.repositories.DoctorRepository;
 import app.registrationSystem.security.Role;
@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +21,7 @@ public class DoctorService {
     private final UserService userService;
     private final SpecializationService specializationService;
     private final IllnessService illnessService;
+    private final MailSenderService mailSenderService;
 
     /**
      * Retrieves doctors by their ID
@@ -57,7 +57,7 @@ public class DoctorService {
      * @return response with status of the performed action
      */
     @Transactional
-    public Response addDoctor(DoctorDTO doctorDTO) {
+    public Response addDoctor(DoctorRegistrationRequest doctorDTO) {
         Optional<User> user = userService.createUser(doctorDTO, Role.DOCTOR);
 
         if (user.isEmpty()) {
@@ -88,12 +88,12 @@ public class DoctorService {
      * @param visits a list of visits to be added
      */
     @Transactional
-    public void addVisits(String username, List<VisitDTO> visits) {
+    public void addVisits(String username, List<VisitRequest> visits) {
         Doctor doctor = getByUsername(username).get();
 
         List<AvailableVisit> availableVisits = new ArrayList<>(doctor.getAvailableVisits());
 
-        for (VisitDTO visit : visits) {
+        for (VisitRequest visit : visits) {
             AvailableVisit availableVisit = new AvailableVisit();
             availableVisit.setDoctor(doctor);
             availableVisit.setDate(visit.getDate());

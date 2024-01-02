@@ -62,4 +62,13 @@ public class VisitService {
         scheduledVisitRepository.save(scheduledVisit);
     }
 
+    /**
+     * Return ScheduledVisit instance of the provided ID
+     * @param id id of the scheduled visit
+     * @return scheduled visit
+     */
+    public Optional<ScheduledVisit> getScheduledVisitByID(Long id) {
+        return scheduledVisitRepository.findById(id);
+    }
+
 }

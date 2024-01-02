@@ -1,8 +1,8 @@
 package app.registrationSystem.services;
 
-import app.registrationSystem.dto.PasswordChangeRequest;
-import app.registrationSystem.dto.Response;
-import app.registrationSystem.dto.UserDTO;
+import app.registrationSystem.dto.request.PasswordChangeRequest;
+import app.registrationSystem.dto.response.Response;
+import app.registrationSystem.dto.request.UserRegistrationRequest;
 import app.registrationSystem.jpa.entities.User;
 import app.registrationSystem.jpa.repositories.UserRepository;
 import app.registrationSystem.security.Role;
@@ -23,7 +23,7 @@ public class UserService {
     private final ValidationUtils validationUtils;
 
     @Transactional
-    public Optional<User> createUser(UserDTO dto, Role role) {
+    public Optional<User> createUser(UserRegistrationRequest dto, Role role) {
 
         if (validationUtils.isUsernameUnavailable(dto.getUsername())) {
             return Optional.empty();
@@ -58,7 +58,7 @@ public class UserService {
      * @return ID of the updated account if successful
      */
     @Transactional
-    public Response changeCredentials(String username, UserDTO userDTO) {
+    public Response changeCredentials(String username, UserRegistrationRequest userDTO) {
         User user = userRepository.findByUsername(username).get();
 
         if (Objects.nonNull(userDTO.getFirstName())) { user.setFirstName(userDTO.getFirstName()); }

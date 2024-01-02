@@ -1,7 +1,7 @@
 package app.registrationSystem.services;
 
-import app.registrationSystem.dto.PatientDTO;
-import app.registrationSystem.dto.Response;
+import app.registrationSystem.dto.request.PatientRegistrationRequest;
+import app.registrationSystem.dto.response.Response;
 import app.registrationSystem.jpa.entities.*;
 import app.registrationSystem.jpa.repositories.PatientRepository;
 import app.registrationSystem.security.Role;
@@ -28,7 +28,7 @@ public class PatientService {
      * @return response with status of the performed action
      */
     @Transactional
-    public Response addPatient(PatientDTO patientDTO) {
+    public Response addPatient(PatientRegistrationRequest patientDTO) {
 
         Optional<User> user = userService.createUser(patientDTO, Role.PATIENT);
 

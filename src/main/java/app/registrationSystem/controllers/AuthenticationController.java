@@ -1,8 +1,8 @@
 package app.registrationSystem.controllers;
 
-import app.registrationSystem.dto.AuthenticationRequest;
-import app.registrationSystem.dto.PatientDTO;
-import app.registrationSystem.dto.Response;
+import app.registrationSystem.dto.request.AuthenticationRequest;
+import app.registrationSystem.dto.request.PatientRegistrationRequest;
+import app.registrationSystem.dto.response.Response;
 import app.registrationSystem.security.CustomUserDetails;
 import app.registrationSystem.security.CustomUserDetailsService;
 import app.registrationSystem.security.JwtUtils;
@@ -39,7 +39,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/auth/register")
-    public ResponseEntity<Response> register(@Valid @RequestBody PatientDTO patientDTO) {
+    public ResponseEntity<Response> register(@Valid @RequestBody PatientRegistrationRequest patientDTO) {
         Response response = patientService.addPatient(patientDTO);
         return ResponseEntity.status(response.httpStatus()).body(response);
     }

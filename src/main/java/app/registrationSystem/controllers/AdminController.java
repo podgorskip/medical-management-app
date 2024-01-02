@@ -1,7 +1,7 @@
 package app.registrationSystem.controllers;
 
-import app.registrationSystem.dto.DoctorDTO;
-import app.registrationSystem.dto.Response;
+import app.registrationSystem.dto.request.DoctorRegistrationRequest;
+import app.registrationSystem.dto.response.Response;
 import app.registrationSystem.security.CustomUserDetails;
 import app.registrationSystem.security.Privilege;
 import app.registrationSystem.security.RequiredPrivilege;
@@ -35,7 +35,7 @@ public class AdminController {
 
     @RequiredPrivilege(value = Privilege.ADD_DOCTOR)
     @PostMapping("/add-doctor")
-    public ResponseEntity<Response> addDoctor(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody DoctorDTO doctorDTO){
+    public ResponseEntity<Response> addDoctor(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody DoctorRegistrationRequest doctorDTO){
         Response response = doctorService.addDoctor(doctorDTO);
         return ResponseEntity.status(response.httpStatus()).body(response);
     }
