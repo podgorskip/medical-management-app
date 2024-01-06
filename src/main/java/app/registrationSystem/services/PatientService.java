@@ -9,7 +9,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -158,7 +158,7 @@ public class PatientService {
         visitService.deleteAvailableVisit(availableVisit);
 
         String message = "Successfully scheduled visit to " + availableVisit.getDoctor().getUser().fullName() +
-                        "for " + new SimpleDateFormat("yyyy-MM-dd hh:mm").format(availableVisit.getDate()) +
+                        " for " + DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(availableVisit.getDate()) +
                         "\nThe visit will take approximately " + availableVisit.getDuration() + " minutes";
 
         mailSenderService.sendNewMail(patient.getUser().getEmail(), "New visit scheduled", message);
