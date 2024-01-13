@@ -174,4 +174,14 @@ public class PatientService {
     public List<ScheduledVisit> checkScheduledVisits(String username) {
         return getByUsername(username).get().getScheduledVisits();
     }
+
+    /**
+     * Returns a set of assigned illnesses to the patient account of the provided username
+     * @param username username of the account to have illnesses checked
+     * @return set of illnesses assigned to the account
+     */
+    public Set<Illness> checkAssignedIllnesses(String username) {
+        Patient patient = getByUsername(username).get();
+        return patient.getIllnesses();
+    }
 }
