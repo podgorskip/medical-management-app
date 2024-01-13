@@ -10,6 +10,7 @@ import app.registrationSystem.dto.response.Response;
 import app.registrationSystem.dto.response.ScheduledVisitResponse;
 import app.registrationSystem.jpa.entities.AvailableVisit;
 import app.registrationSystem.jpa.entities.Doctor;
+import app.registrationSystem.jpa.entities.Illness;
 import app.registrationSystem.jpa.entities.ScheduledVisit;
 import app.registrationSystem.security.CustomUserDetails;
 import app.registrationSystem.security.Privilege;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequiredArgsConstructor
@@ -102,6 +104,12 @@ public class PatientController {
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(doctors.get().stream().map(DoctorMapper.INSTANCE::convert).toList());
+    }
+
+    @RequiredPrivilege(value = Privilege.CHECK_ASSIGNED_ILLNESSES)
+    @GetMapping("/my-illnesses")
+    public ResponseEntity<Set<Illness>> checkAssignedIllnesses(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        return ResponseEntity.status(HttpStatus.OK).body(patientService.checkAssignedIllnesses(customUserDetails.getUsername()));
     }
 
 }
