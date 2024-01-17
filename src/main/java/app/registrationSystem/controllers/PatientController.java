@@ -1,23 +1,15 @@
 package app.registrationSystem.controllers;
 
-import app.registrationSystem.dto.mappers.AvailableVisitMapper;
-import app.registrationSystem.dto.mappers.DoctorMapper;
-import app.registrationSystem.dto.mappers.ScheduledVisitMapper;
+import app.registrationSystem.dto.mappers.*;
 import app.registrationSystem.dto.request.IllnessesRequest;
-import app.registrationSystem.dto.response.AvailableVisitResponse;
-import app.registrationSystem.dto.response.DoctorResponse;
-import app.registrationSystem.dto.response.Response;
-import app.registrationSystem.dto.response.ScheduledVisitResponse;
-import app.registrationSystem.jpa.entities.AvailableVisit;
-import app.registrationSystem.jpa.entities.Doctor;
-import app.registrationSystem.jpa.entities.Illness;
-import app.registrationSystem.jpa.entities.ScheduledVisit;
+import app.registrationSystem.dto.request.PrescriptionRequest;
+import app.registrationSystem.dto.request.QuestionRequest;
+import app.registrationSystem.dto.response.*;
+import app.registrationSystem.jpa.entities.*;
 import app.registrationSystem.security.CustomUserDetails;
 import app.registrationSystem.security.Privilege;
 import app.registrationSystem.security.RequiredPrivilege;
-import app.registrationSystem.services.DoctorService;
-import app.registrationSystem.services.PatientService;
-import app.registrationSystem.services.VisitService;
+import app.registrationSystem.services.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -28,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -36,11 +29,15 @@ public class PatientController {
     private final PatientService patientService;
     private final DoctorService doctorService;
     private final VisitService visitService;
+    private final PrescriptionService prescriptionService;
+    private final QuestionService questionService;
+    private final AnswerService answerService;
+    private final IllnessService illnessService;
 
     @RequiredPrivilege(value = Privilege.ADD_ILLNESS)
     @PostMapping("/add-illnesses/{username}")
     public ResponseEntity<Response> addIllnesses(@NotNull @PathVariable("username") String username, @NotNull @RequestBody IllnessesRequest illnesses) {
-        Response response = patientService.addIllnesses(username, illnesses.getIllnesses());
+        Response response = illnessService.assignIllnessesToPatient(username, illnesses.getIllnesses());
         return ResponseEntity.status(response.httpStatus()).body(response);
     }
 
@@ -53,8 +50,12 @@ public class PatientController {
     @RequiredPrivilege(value = Privilege.CHECK_AVAILABLE_VISITS)
     @GetMapping("/visit-recommendations")
     public ResponseEntity<Map<String, List<AvailableVisitResponse>>> checkVisitRecommendations(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        return ResponseEntity.status(HttpStatus.OK).body(AvailableVisitMapper.INSTANCE.mapToResponseMap(patientService.checkVisitRecommendations(customUserDetails.getUsername())));
+        Map<String, List<AvailableVisit>> recommendations = visitService.checkVisitRecommendations(customUserDetails.getUsername());
 
+        if (recommendations.isEmpty())
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(AvailableVisitMapper.INSTANCE.mapToResponseMap(recommendations));
     }
 
     @RequiredPrivilege(value = Privilege.CHECK_AVAILABLE_VISITS)
@@ -72,14 +73,19 @@ public class PatientController {
     @RequiredPrivilege(value = Privilege.SCHEDULE_VISIT)
     @PostMapping("/schedule-visit")
     public ResponseEntity<Response> scheduleVisit(@AuthenticationPrincipal CustomUserDetails customUserDetails, @NotNull @RequestParam("id") Long id) {
-        Response response = patientService.scheduleVisit(id, customUserDetails.getUsername());
+        Response response = visitService.scheduleVisit(id, customUserDetails.getUsername());
         return ResponseEntity.status(response.httpStatus()).body(response);
     }
 
     @RequiredPrivilege(value = Privilege.SCHEDULE_VISIT)
     @GetMapping("/scheduled-visits")
     public ResponseEntity<List<ScheduledVisitResponse>> checkScheduledVisits(@AuthenticationPrincipal CustomUserDetails CustomUserDetails) {
-        return ResponseEntity.status(HttpStatus.OK).body(patientService.checkScheduledVisits(CustomUserDetails.getUsername()).stream().map(ScheduledVisitMapper.INSTANCE::convert).toList());
+        List<ScheduledVisit> scheduledVisits = visitService.checkPatientScheduledVisits(CustomUserDetails.getUsername());
+
+        if (scheduledVisits.isEmpty())
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(scheduledVisits.stream().map(ScheduledVisitMapper.INSTANCE::convert).toList());
     }
 
     @RequiredPrivilege(value = Privilege.CHECK_DOCTORS)
@@ -108,8 +114,53 @@ public class PatientController {
 
     @RequiredPrivilege(value = Privilege.CHECK_ASSIGNED_ILLNESSES)
     @GetMapping("/my-illnesses")
-    public ResponseEntity<Set<Illness>> checkAssignedIllnesses(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        return ResponseEntity.status(HttpStatus.OK).body(patientService.checkAssignedIllnesses(customUserDetails.getUsername()));
+    public ResponseEntity<Set<IllnessResponse>> checkAssignedIllnesses(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        Optional<Set<Illness>> illnesses = illnessService.checkAssignedIllnesses(customUserDetails.getUsername());
+
+        if (illnesses.isEmpty())
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(illnesses.get().stream().map(IllnessMapper.INSTANCE::convert).collect(Collectors.toSet()));
+    }
+
+    @RequiredPrivilege(value = Privilege.CHECK_PRESCRIPTIONS)
+    @GetMapping("/my-prescriptions")
+    public ResponseEntity<List<PrescriptionResponse>> checkAssignedPrescriptions(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        List<Prescription> prescriptions = prescriptionService.checkPrescriptions(customUserDetails.getUsername());
+
+        if (prescriptions.isEmpty())
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(prescriptions.stream().map(PrescriptionMapper.INSTANCE::convert).toList());
+    }
+
+    @RequiredPrivilege(value = Privilege.ASK_QUESTION)
+    @PostMapping("/ask-question")
+    public ResponseEntity<Response> askQuestion(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody QuestionRequest questionRequest) {
+        Response response = questionService.askQuestion(questionRequest, customUserDetails.getUsername());
+        return ResponseEntity.status(response.httpStatus()).body(response);
+    }
+
+    @RequiredPrivilege(value = Privilege.ASK_QUESTION)
+    @GetMapping("/questions")
+    public ResponseEntity<List<QuestionResponse>> checkAskedQuestions(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+         Optional<List<Question>> questions = questionService.getAskedQuestions(customUserDetails.getUsername());
+
+         if (questions.isEmpty())
+             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
+         return ResponseEntity.status(HttpStatus.OK).body(questions.get().stream().map(QuestionMapper.INSTANCE::convert).toList());
+    }
+
+    @RequiredPrivilege(value = Privilege.ASK_QUESTION)
+    @GetMapping("/answers")
+    public ResponseEntity<List<Answer>> checkAnswers(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        Optional<List<Answer>> answers = answerService.getAnswers(customUserDetails.getUsername());
+
+        if (answers.isEmpty())
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(answers.get());
     }
 
 }
