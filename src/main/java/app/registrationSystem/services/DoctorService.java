@@ -2,7 +2,6 @@ package app.registrationSystem.services;
 
 import app.registrationSystem.dto.request.DoctorRegistrationRequest;
 import app.registrationSystem.dto.response.Response;
-import app.registrationSystem.dto.request.VisitRequest;
 import app.registrationSystem.jpa.entities.*;
 import app.registrationSystem.jpa.repositories.DoctorRepository;
 import app.registrationSystem.security.Role;
@@ -10,10 +9,12 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ *  A class that handles operations related to Doctor entity
+ */
 @Service
 @RequiredArgsConstructor
 public class DoctorService {
@@ -21,7 +22,6 @@ public class DoctorService {
     private final UserService userService;
     private final SpecializationService specializationService;
     private final IllnessService illnessService;
-    private final MailSenderService mailSenderService;
 
     /**
      * Retrieves doctors by their ID
@@ -85,29 +85,6 @@ public class DoctorService {
     }
 
     /**
-     * Adds available visits for a doctor account
-     * @param username username of the doctor account who has visits added
-     * @param visits a list of visits to be added
-     */
-    @Transactional
-    public void addVisits(String username, List<VisitRequest> visits) {
-        Doctor doctor = getByUsername(username).get();
-
-        List<AvailableVisit> availableVisits = new ArrayList<>(doctor.getAvailableVisits());
-
-        for (VisitRequest visit : visits) {
-            AvailableVisit availableVisit = new AvailableVisit();
-            availableVisit.setDoctor(doctor);
-            availableVisit.setDate(visit.getDate());
-            availableVisit.setDuration(visit.getDuration());
-            availableVisits.add(availableVisit);
-        }
-
-        doctor.setAvailableVisits(availableVisits);
-        doctorRepository.save(doctor);
-    }
-
-    /**
      * Returns Doctor instance found by its username
      * @param username username of the account to be found
      * @return Doctor instance if user of such a username exists
@@ -129,15 +106,6 @@ public class DoctorService {
      */
     public Optional<List<Doctor>> getBySpecialization(Specialization specialization) {
         return doctorRepository.findBySpecialization(specialization);
-    }
-
-    /**
-     * Returns a list containing scheduled visits for the account of the provided username
-     * @param username username of the account to have scheduled visits checked
-     * @return a list containing scheduled visits
-     */
-    public List<ScheduledVisit> checkScheduledVisits(String username) {
-        return getByUsername(username).get().getScheduledVisits();
     }
 
     /**
@@ -168,5 +136,14 @@ public class DoctorService {
         }
 
         return Optional.empty();
+    }
+
+    /**
+     * Retrieves a doctor who has the least questions assigned
+     * @param specialization specialization which the doctor must contain to answer the question
+     * @return Doctor instance if present, empty otherwise
+     */
+    public Optional<Doctor> getWithLeastQuestionsAssigned(Specialization specialization) {
+        return doctorRepository.findDoctorWithLeastQuestionsInSpecialization(specialization);
     }
 }
