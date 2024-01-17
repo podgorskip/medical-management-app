@@ -1,2 +1,8 @@
-package app.registrationSystem.dto.request;public class AnswerRequest {
+package app.registrationSystem.dto.request;
+
+import lombok.Data;
+
+@Data
+public class AnswerRequest {
+    private String answer;
 }
