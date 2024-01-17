@@ -7,6 +7,8 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "specialization", schema = "registration_system")
@@ -28,4 +30,28 @@ public class Specialization {
 
     @OneToMany(mappedBy = "specialization")
     private List<Doctor> doctors;
+
+    @OneToMany(mappedBy = "specialization")
+    private List<Question> questions;
+
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "medication_specialization",
+            joinColumns = @JoinColumn(name = "specialization_id"),
+            inverseJoinColumns = @JoinColumn(name = "medication_id")
+    )
+    private Set<Medication> medications;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Specialization that = (Specialization) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }
