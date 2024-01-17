@@ -15,6 +15,9 @@ import org.springframework.stereotype.Service;
 import java.util.Objects;
 import java.util.Optional;
 
+/**
+ * A class that handles operations related to User entity
+ */
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -22,31 +25,46 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final ValidationUtils validationUtils;
 
+    /**
+     * Allows to create a new User
+     * @param userRequest request with the info about a user to be created
+     * @param role Role of the user
+     * @return user ID if successfully added a user, empty otherwise
+     */
     @Transactional
-    public Optional<User> createUser(UserRegistrationRequest dto, Role role) {
+    public Optional<User> createUser(UserRegistrationRequest userRequest, Role role) {
 
-        if (validationUtils.isUsernameUnavailable(dto.getUsername())) {
+        if (validationUtils.isUsernameUnavailable(userRequest.getUsername())) {
             return Optional.empty();
         }
 
         User user = new User();
 
-        user.setFirstName(dto.getFirstName());
-        user.setLastName(dto.getLastName());
-        user.setUsername(dto.getUsername());
-        user.setPassword(passwordEncoder.encode(dto.getPassword()));
-        user.setEmail(dto.getEmail());
-        user.setPhoneNumber(dto.getPhoneNumber());
+        user.setFirstName(userRequest.getFirstName());
+        user.setLastName(userRequest.getLastName());
+        user.setUsername(userRequest.getUsername());
+        user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+        user.setEmail(userRequest.getEmail());
+        user.setPhoneNumber(userRequest.getPhoneNumber());
         user.setRole(role);
 
         return Optional.of(userRepository.save(user));
     }
 
+    /**
+     * Removes a user
+     * @param user user to be removed
+     */
     @Transactional
     public void removeUser(User user) {
         userRepository.delete(user);
     }
 
+    /**
+     * Retrieves a user by they username
+     * @param username username of the user
+     * @return User if present, empty otherwise
+     */
     public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
@@ -75,6 +93,12 @@ public class UserService {
         return new Response(true, HttpStatus.OK,"Successfully updated credentials");
     }
 
+    /**
+     * Allows to change a user's password
+     * @param username username of the user
+     * @param passwordChangeRequest object containing the old password and a new password
+     * @return Response if successfully changed the password
+     */
     @Transactional
     public Response changePassword(String username, PasswordChangeRequest passwordChangeRequest) {
         User user = findByUsername(username).get();
