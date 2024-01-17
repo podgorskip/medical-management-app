@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -27,7 +28,7 @@ public class Patient {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
             name = "patient_illness",
             joinColumns = {@JoinColumn(name = "patient_id")},
@@ -37,4 +38,25 @@ public class Patient {
 
     @OneToMany(mappedBy = "patient")
     private List<ScheduledVisit> scheduledVisits;
+
+    @OneToMany(mappedBy = "patient")
+    private List<Prescription> prescriptions;
+
+    @OneToMany(mappedBy = "patient")
+    private List<Question> questions;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Patient patient = (Patient) o;
+
+        return Objects.equals(id, patient.id) && user.equals(patient.user);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, user);
+    }
 }
