@@ -7,7 +7,6 @@ import app.registrationSystem.jpa.entities.User;
 import app.registrationSystem.jpa.repositories.UserRepository;
 import app.registrationSystem.security.Role;
 import app.registrationSystem.utils.ValidationUtils;
-import app.registrationSystem.utils.VerificationCodeGenerator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,7 +24,6 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final ValidationUtils validationUtils;
-    private final MailSenderService mailSenderService;
 
     /**
      * Allows to create a new User
@@ -118,28 +116,4 @@ public class UserService {
 
         return new Response(true, HttpStatus.OK, "Successfully updated the password");
     }
-
-    @Transactional
-    public Response requestVerification(String username) {
-        Optional<User> user = userRepository.findByUsername(username);
-
-        if (user.isEmpty())
-            return new Response(false, HttpStatus.NOT_FOUND, "No user of the provided ID found");
-
-        sendVerificationCode(user.get());
-
-        return new Response(true, HttpStatus.OK, "Correctly send the verification email");
-    }
-
-    /**
-     * Allows to send an email with the account verification code
-     * @param user User who requests the verification
-     */
-    private void sendVerificationCode(User user) {
-        String message = "Account verification has been requested.\n"
-                + "Enter verification code: " + VerificationCodeGenerator.generateVerificationCode();
-
-        mailSenderService.sendNewMail(user.getEmail(), "Account verification", message);
-    }
-
 }
