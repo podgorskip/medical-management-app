@@ -7,8 +7,6 @@ import app.registrationSystem.dto.response.IllnessResponse;
 import app.registrationSystem.dto.response.Response;
 import app.registrationSystem.dto.request.UserRegistrationRequest;
 import app.registrationSystem.dto.response.SpecializationResponse;
-import app.registrationSystem.jpa.entities.Illness;
-import app.registrationSystem.jpa.entities.Specialization;
 import app.registrationSystem.security.CustomUserDetails;
 import app.registrationSystem.security.Privilege;
 import app.registrationSystem.security.RequiredPrivilege;
