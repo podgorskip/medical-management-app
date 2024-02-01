@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { useAuth } from "./AuthContext"
+import { Link } from 'react-router-dom'
 
 function SignUp() {
     const [firstName, setFirstName] = useState("");
@@ -135,10 +136,10 @@ function SignUp() {
                 </div>
         </form>
         {isSubmitted && (
-            <div>
+            <div className="thanks">
                 <h5>Thank you for entrusting us with your healthcare needs.</h5>
                 <h6>If you wish to receive tailored visit recommendations, we invite you to specify the particular medical conditions of interest.</h6>
-                <a href='/select-illnesses'>Select Preferred Illnesses</a>
+                <Link to='/select-illnesses' className='link'>Set preferred illnesses</Link>
             </div>
         )
 

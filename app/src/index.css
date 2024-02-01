@@ -86,6 +86,30 @@
   margin: auto;
 }
 
+.registration .thanks {
+  margin-top: 50px;
+  display: grid;
+  grid-template-columns: auto;
+  justify-content: center;
+  text-align: center;
+}
+
+.registration .thanks h5 {
+  margin-bottom: 30px;
+}
+
+.registration .link {
+  display: inline;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-decoration: none;
+}
+
+.registration .link:hover {
+  color: rgb(0, 115, 255);
+}
+
+
 /* SPECIALIZATIONS */
 .specializations h2 {
   text-align: center;
