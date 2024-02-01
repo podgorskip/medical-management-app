@@ -109,6 +109,20 @@ public class DoctorService {
     }
 
     /**
+     * Returns all the doctors which have the specified specialization
+     * @param id ID of the specialization
+     * @return list of Doctor instances if are present
+     */
+    public Optional<List<Doctor>> getBySpecializationID(Long id) {
+        Optional<Specialization> specialization = specializationService.getById(id);
+
+        if (specialization.isEmpty())
+            return Optional.empty();
+
+        return getBySpecialization(specialization.get());
+    }
+
+    /**
      * Returns all the doctors that have the specialization named as the parameter
      * @param specializationName specialization name on which doctors are filetered
      * @return list of Doctor instances if are present
