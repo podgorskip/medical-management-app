@@ -48,6 +48,38 @@ public class VisitService {
     }
 
     /**
+     * Returns available visits based on the illness ID
+     * @param id ID of the illness
+     * @return list of available visits if found, empty otherwise
+     */
+    public Optional<List<AvailableVisit>> getAvailableVisitsByID(Long id) {
+        Optional<Illness> illness = illnessService.getById(id);
+
+        if (illness.isEmpty())
+            return Optional.empty();
+
+        return Optional.of(doctorService.getBySpecialization(illness.get().getSpecialization())
+                .stream()
+                .flatMap(doctors -> doctors.stream().flatMap(doctor -> doctor.getAvailableVisits().stream()))
+                .filter(availableVisit ->  availableVisit.getDuration() >= illness.get().getVisitDuration())
+                .collect(Collectors.toList()));
+    }
+
+    /**
+     *  Returns available visits based on the doctor ID
+     * @param id ID of the doctor
+     * @return list of available visits if found, empty otherwise
+     */
+    public Optional<List<AvailableVisit>> getAvailableVisitsByDoctorID(Long id) {
+        Optional<Doctor> doctor = doctorService.getById(id);
+
+        if (doctor.isEmpty())
+            return Optional.empty();
+
+        return availableVisitRepository.findByDoctor(doctor.get());
+    }
+
+    /**
      * Returns available visit based on the provided id
      * @param id id of the visit to be found
      * @return AvailableVisit instance if exists
@@ -104,9 +136,9 @@ public class VisitService {
         scheduledVisit.setSpecialization(availableVisit.getDoctor().getSpecialization());
 
         scheduledVisitRepository.save(scheduledVisit);
-        availableVisitRepository.delete(availableVisit);
-
         sendScheduledVisitNotification(patient, availableVisit);
+        availableVisit.setDoctor(null);
+        availableVisitRepository.delete(availableVisit);
 
         return new Response(true, HttpStatus.OK, "Successfully scheduled visit");
     }
@@ -198,12 +230,26 @@ public class VisitService {
         });
     }
 
+    /**
+     * Returns visit histories what wait for a review for a patient
+     * @param username username of the patient who has visits to review
+     * @return list of visit histories  if found, empty otherwise
+     */
     public Optional<List<VisitHistory>> getVisitsWaitingForReview(String username) {
         Optional<Patient> patient = patientService.getByUsername(username);
 
         if (patient.isEmpty()) return Optional.empty();
 
         return visitHistoryRepository.findUnreviewedByPatient(patient.get());
+    }
+
+    /**
+     * Returns visit histories based on the visit ID
+     * @param id ID of the visit history
+     * @return list of visit histories  if found, empty otherwise
+     */
+    public Optional<VisitHistory> getVisitHistoryByID(Long id) {
+        return visitHistoryRepository.findById(id);
     }
 
     /**
@@ -217,5 +263,33 @@ public class VisitService {
                 "\nThe visit will take approximately " + visit.getDuration() + " minutes";
 
         mailSenderService.sendNewMail(patient.getUser().getEmail(), "New visit scheduled", message);
+    }
+
+    /**
+     * Returns visit histories based on the doctor ID
+     * @param id ID of the doctor
+     * @return list of visit histories  if found, empty otherwise
+     */
+    public Optional<List<VisitHistory>> getVisitHistoriesByDoctorID(Long id) {
+        Optional<Doctor> doctor = doctorService.getById(id);
+
+        if (doctor.isEmpty())
+            return Optional.empty();
+
+        return visitHistoryRepository.findByDoctor(doctor.get());
+    }
+
+    /**
+     * Returns visit histories based on the patient username
+     * @param username username of the patient
+     * @return list of visit histories  if found, empty otherwise
+     */
+    public Optional<List<VisitHistory>> getVisitHistoriesByPatientUsername(String username) {
+        Optional<Patient> patient = patientService.getByUsername(username);
+
+        if (patient.isEmpty())
+            return Optional.empty();
+
+        return visitHistoryRepository.findByPatient(patient.get());
     }
 }
