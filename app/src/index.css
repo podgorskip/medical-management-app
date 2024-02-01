@@ -1,0 +1,577 @@
+* {
+  font-family: sans-serif;
+}
+
+.container {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.navbar-m {
+  color: white;
+  background-color: rgb(0, 115, 255);
+  margin-top: 20px;
+  padding: 10px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  display: grid;
+  list-style: none;
+  grid-template-columns: repeat(2, auto);
+  justify-content: space-between;
+  gap: 25px;
+}
+
+.navbar-m div {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  gap: 20px;
+  justify-content: center;
+}
+
+.nav-item {
+  padding: 5px;
+  font-size: 20px;
+  text-transform: capitalize;
+  letter-spacing: 1px;
+}
+
+.nav-item:hover {
+  color:  rgb(125, 183, 255);
+}
+
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  text-align: center;
+  padding: 20px;
+  background-color: rgb(0, 115, 255);
+  margin-bottom: 20px;
+}
+
+.card h5::first-letter, .card h6::first-letter {
+  text-transform: capitalize;
+}
+
+.registration {
+  margin-top: 50px;
+}
+
+.form {
+  font-size: 20px;
+  margin-top: 40px;
+  display: grid;
+  gap: 15px;
+  grid-template-columns: 170px 200px;
+  justify-content: center;
+}
+
+.bttns {
+  margin-top: 20px;
+  grid-column: 2 / -1;
+  display: grid;
+  justify-content: space-between;
+  grid-template-columns: auto auto;
+}
+
+.bttns button {
+  background-color: rgb(0, 115, 255);
+}
+
+.schedule-visit-link {
+  color: white;
+  font-size: 15px;
+  background-color: rgb(0, 115, 255);
+  padding: 10px;
+  text-decoration: none;
+  border-radius: 10px;
+  width: auto;
+  margin: auto;
+}
+
+/* SPECIALIZATIONS */
+.specializations h2 {
+  text-align: center;
+}
+
+.spec {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  justify-content: space-around;
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+
+.spec li::first-letter {
+  text-transform: capitalize;
+}
+
+.spec li:hover {
+  color:  rgb(0, 115, 255);
+}
+
+.spec li {
+  margin-bottom: 10px;
+}
+
+.specializations p:first-child::first-letter {
+  text-transform: capitalize;
+}
+
+.sign-in {
+  margin-top: 50px;
+}
+
+input[type='text'], input[type='email'], input[type='password'], input[type='tel'] {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 16px;
+  text-align: left;
+  padding: 5px;
+}
+
+.alert-success {
+  font-size: 1;
+  grid-column: 1 / -1;
+}
+
+.disabled-link {
+  pointer-events: none;
+}
+
+.specializations ul {
+  list-style: none;
+}
+
+.doctors .visits {
+  display: grid;
+  grid-template-columns: repeat(4, 280px);
+  gap: 20px;
+  justify-content: start;
+  list-style: none;
+  margin-top: 30px;
+}
+
+.content div:last-child {
+  grid-column: 1 / -1;
+  text-align: center;
+}
+
+.content div:last-child a {
+  text-decoration: none;
+  color: rgb(0, 115, 255);
+}
+
+.content div:last-child p {
+  margin-right: 20px;
+}
+
+/* ACCOUNT DETAILS */
+
+.account-details {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  grid-template-columns: auto 1fr;
+  gap: 20px;
+}
+
+.actions {
+  margin-top: 0px;
+  grid-row: 1 / -1;
+  grid-template-columns: auto;
+  max-width: max-content;
+  grid-template-rows: repeat(4, auto);
+  align-content: start;
+}
+
+.account-details .visits {
+  display: grid;
+  list-style: none;
+  gap: 20px;
+  margin-top: 40px;
+  grid-template-columns: repeat(2, 500px);
+}
+
+.welcome {
+  margin-top: 20px;
+  grid-column: 2;
+}
+
+.content {
+  grid-row: 2;
+  grid-column: 2;
+}
+
+.incoming-visits {
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.content .schedule {
+  display: grid;
+  grid-template-columns: auto auto;
+  justify-content: center;
+}
+
+/* APPOINTMENTS */
+.appointments {
+  margin-top: 30px;
+}
+
+.appointments h3, h5 {
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.appointments ul {
+  margin-top: 30px;
+  display: grid;
+  grid-template-columns: repeat(2, 400px);
+  list-style: none;
+  gap: 20px;
+  justify-content: center;
+}
+
+/* PATRINT VISIT HISTORY */
+
+.patient-visit-history {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  gap: 20px;
+  margin-top: 40px;
+  justify-content: center;
+}
+
+.patient-visit-history h3 {
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  grid-column: 1 / -1;
+}
+
+.patient-visit-history ul {
+  list-style: none;
+}
+
+.patient-visit-history h6 {
+  font-size: 20px;
+}
+
+/* HOME PAGE */
+
+.header {
+  margin-top: 20px;
+  display: grid;
+  grid-template-rows: repeat(2, auto);
+  text-align: center;
+  align-items: center;
+  gap: 50px;
+  grid-column-gap: 30px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  justify-content: center;
+}
+
+.home-page {
+  margin-bottom: 100px;
+}
+
+.home-page div {
+  grid-row: 2;
+}
+
+.home-page div:nth-child(3) {
+  font-size: 20px;
+  margin-top: 50px;
+  line-height: 2;
+}
+
+.home-page div:nth-child(3) p span {
+  margin-left: 50px;
+}
+
+.home-page div:nth-child(3) ul {
+  margin-top: 50px;
+  display: grid;
+  list-style: none;
+  grid-template-columns: repeat(3, auto);
+  gap: 20px;
+  align-content: stretch;
+}
+
+.home-page div:nth-child(3) ul li {
+  align-self: stretch;
+  height: max-content;
+}
+
+/* FOOTER */
+footer {
+  background-color: #0073ff;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  color: white;
+  padding-top: 9px;
+  margin-top: auto;
+  padding-left: 20px;
+}
+
+.container {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  min-height: 1000px;
+}
+
+/* TO REVIEW */
+.to-review .card {
+  justify-content: space-around;
+  display: grid;
+  gap: 30px;
+  column-gap: 50px;
+  grid-template-columns: auto auto;
+  justify-items: center;
+}
+
+.to-review ul {
+  margin-top: 50px;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  justify-content: space-around;
+  gap: 20px;
+}
+
+.to-review h3, .to-review h6 {
+  text-transform: uppercase;
+  text-align: center;
+  letter-spacing: 2px;
+  margin-top: 20px;
+}
+
+.to-review .card button.btn-primary {
+  height: auto; /* Set the height to auto to adjust based on content */
+  align-self: center; /* Align the button to the start of the cell vertically */
+}
+
+/* REVIEW PANEL */
+
+.review-panel form {
+  margin-top: 40px;
+  margin-bottom: 80px;
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  justify-content: center;
+  gap: 40px;
+  align-items: center;
+}
+
+.review-panel form input:nth-child(2) {
+  font-size: 20px;
+}
+
+.review-panel {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  padding: 20px;
+  margin-top: 50px;
+  height: 1000px;
+}
+
+.review-panel div:first-child {
+  margin-top: 30px;
+}
+
+.review-panel label {
+  font-size: 20px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.review-panel input[type="text"] {
+  width: 400px;
+  height: 100px;
+}
+
+.review-panel input[type="text"]::placeholder {
+  text-align: center;
+  vertical-align: middle;
+}
+
+.review-panel div h4, h5, h6 {
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.review-panel form div {
+  justify-self: center;
+  grid-column:  1 / -1;
+}
+
+/* DOCTORS */
+
+.doctors ul {
+  list-style: none;
+  padding: 0;
+  margin-left: 0;
+}
+
+.doctors h2, h3 {
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-align: center;
+}
+
+.doctors .review {
+  display: grid;
+  grid-template-columns: 300px 300px;
+  justify-content: space-around;
+}
+
+.stars {
+  margin-top: 10px;
+}
+
+.reviews li {
+  margin-bottom: 20px;
+}
+
+.doctors h2 {
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+.doctors span {
+  margin-left: 20px;
+}
+
+.doctors p {
+  margin-bottom: 30px;
+  line-height: 2;
+}
+
+/* QUESTIONS */
+.questions-panel .specializations {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  justify-content: space-around;
+  margin-top: 30px;
+}
+
+.questions-panel .specializations {
+  line-height: 2;
+  font-size: 20px;
+}
+
+.questions-panel .specializations li::first-letter {
+  text-transform: capitalize;
+}
+
+.questions-panel .specializations li:hover {
+  color:  rgb(0, 115, 255);
+}
+
+.questions-panel input[type='text'] {
+  width: 800px;
+  height: 300px;
+  text-align: center;
+}
+
+input[type="text"]:hover {
+  border-color: #007bff;
+}
+
+.question-panel input[type="text"]:focus {
+  outline: none;
+  border-color:rgb(0, 115, 255);
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.ask-question {
+  display: grid;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 100px;
+}
+
+.questions-panel h5, .questions-panel h6 {
+  text-align: center;
+  line-height: 2;
+  text-transform: uppercase;
+  margin-top: 30px;
+}
+
+/* ILLNESSES */
+
+.illness-page h1, .illness-page h5 {
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 40px;
+}
+
+.illness-page ul {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  justify-content: space-around;
+  list-style: none;
+}
+
+.illnesses li {
+  font-size: 22px;
+  margin-bottom: 10px;
+  display: inline;
+}
+
+.illnesses label::first-letter {
+  text-transform: capitalize;
+}
+
+.illnesses input[type='checkbox'] {
+  margin-right: 20px;
+  border-radius: 4px;
+}
+
+.illness-page li:hover {
+  color: rgb(0, 115, 255);
+}
+
+.illness-page div:last-child {
+  display: grid;
+}
+
+.illness-page button {
+  margin-bottom: 40px;
+}
+
+/* VISIT RECOMMENDATIONS */
+.visit-recommendations div:first-child {
+  margin-top: 50px;
+  margin-bottom: 30px;
+}
+
+.visit-recommendations ul:first-child {
+  list-style: none;
+  padding-left: 0;
+}
+
+.visit-recommendations ul:nth-child(2) {
+  list-style: none;
+  display: grid;
+  gap: 10px;
+  margin-left: 0;
+  padding-left: 0px;
+  grid-template-columns: repeat(5, auto);
+  margin-bottom: 30px;
+  justify-content: start;
+}
+
+.visit-recommendations ul:nth-child(2) li {
+  margin-bottom: 20px;
+  width: 250px;
+  height: 300px;
+}
