@@ -28,10 +28,9 @@ public class DoctorController {
         return ResponseEntity.status(HttpStatus.OK).body(doctorService.getAll().stream().map(DoctorMapper.INSTANCE::convert).toList());
     }
 
-    @RequiredPrivilege(value = Privilege.CHECK_DOCTORS)
-    @GetMapping("/patient/doctors-by-specialization/{specialization}")
-    public ResponseEntity<List<DoctorResponse>> checkDoctorsBySpecialization(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable("specialization") String specialization) {
-        Optional<List<Doctor>> doctors = doctorService.getBySpecialization(specialization);
+    @GetMapping("/auth/doctors-by-specialization")
+    public ResponseEntity<List<DoctorResponse>> checkDoctorsBySpecialization(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestParam("specialization") Long id) {
+        Optional<List<Doctor>> doctors = doctorService.getBySpecializationID(id);
 
         if (doctors.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -64,5 +63,10 @@ public class DoctorController {
     public ResponseEntity<Response> addDoctor(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody DoctorRegistrationRequest doctorDTO){
         Response response = doctorService.addDoctor(doctorDTO);
         return ResponseEntity.status(response.httpStatus()).body(response);
+    }
+
+    @GetMapping("/auth/doctors")
+    public ResponseEntity<List<DoctorResponse>> getAllDoctors(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        return ResponseEntity.status(HttpStatus.OK).body(doctorService.getAll().stream().map(DoctorMapper.INSTANCE::convert).toList());
     }
 }
