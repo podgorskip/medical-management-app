@@ -2,12 +2,15 @@ package app.registrationSystem.controllers;
 
 import app.registrationSystem.dto.mappers.AvailableVisitMapper;
 import app.registrationSystem.dto.mappers.ScheduledVisitMapper;
+import app.registrationSystem.dto.mappers.VisitHistoryMapper;
 import app.registrationSystem.dto.request.VisitsRequest;
 import app.registrationSystem.dto.response.AvailableVisitResponse;
 import app.registrationSystem.dto.response.Response;
 import app.registrationSystem.dto.response.ScheduledVisitResponse;
+import app.registrationSystem.dto.response.VisitHistoryResponse;
 import app.registrationSystem.jpa.entities.AvailableVisit;
 import app.registrationSystem.jpa.entities.ScheduledVisit;
+import app.registrationSystem.jpa.entities.VisitHistory;
 import app.registrationSystem.security.CustomUserDetails;
 import app.registrationSystem.security.Privilege;
 import app.registrationSystem.security.RequiredPrivilege;
@@ -41,7 +44,7 @@ public class VisitController {
         List<ScheduledVisit> scheduledVisits = visitService.checkScheduledVisits(customUserDetails.getUsername());
 
         if (scheduledVisits.isEmpty())
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 
         return ResponseEntity.status(HttpStatus.OK).body(scheduledVisits.stream().map(ScheduledVisitMapper.INSTANCE::convert).toList());
     }
@@ -52,7 +55,7 @@ public class VisitController {
         List<ScheduledVisit> scheduledVisits = visitService.getScheduledVisitsForToday(customUserDetails.getUsername());
 
         if (scheduledVisits.isEmpty())
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 
         return ResponseEntity.status(HttpStatus.OK).body(scheduledVisits.stream().map(ScheduledVisitMapper.INSTANCE::convert).toList());
     }
@@ -68,13 +71,12 @@ public class VisitController {
         return ResponseEntity.status(HttpStatus.OK).body(AvailableVisitMapper.INSTANCE.mapToResponseMap(recommendations));
     }
 
-    @RequiredPrivilege(value = Privilege.CHECK_AVAILABLE_VISITS)
-    @GetMapping("/patient/available-visits")
-    public ResponseEntity<List<AvailableVisitResponse>> checkAvailableVisits(@AuthenticationPrincipal CustomUserDetails customUserDetails, @NotNull @RequestParam("illness") String illness) {
-        Optional<List<AvailableVisit>> availableVisits = visitService.getAvailableVisits(illness);
+    @GetMapping("/auth/available-visits")
+    public ResponseEntity<List<AvailableVisitResponse>> checkAvailableVisits(@AuthenticationPrincipal CustomUserDetails customUserDetails, @NotNull @RequestParam("specialist") Long id) {
+        Optional<List<AvailableVisit>> availableVisits = visitService.getAvailableVisitsByDoctorID(id);
 
         if (availableVisits.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(availableVisits.get().stream().map(AvailableVisitMapper.INSTANCE::convert).toList());
@@ -93,8 +95,19 @@ public class VisitController {
         List<ScheduledVisit> scheduledVisits = visitService.checkPatientScheduledVisits(CustomUserDetails.getUsername());
 
         if (scheduledVisits.isEmpty())
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 
         return ResponseEntity.status(HttpStatus.OK).body(scheduledVisits.stream().map(ScheduledVisitMapper.INSTANCE::convert).toList());
+    }
+
+    @RequiredPrivilege(value = Privilege.CHECK_VISIT_HISTORY)
+    @GetMapping("/patient/visit-history")
+    public ResponseEntity<List<VisitHistoryResponse>> checkVisitHistory(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        Optional<List<VisitHistory>> visitHistories = visitService.getVisitHistoriesByPatientUsername(customUserDetails.getUsername());
+
+        if (visitHistories.isEmpty())
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(visitHistories.get().stream().map(VisitHistoryMapper.INSTANCE::convert).toList());
     }
 }
