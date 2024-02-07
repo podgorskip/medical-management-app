@@ -78,7 +78,7 @@ Receive important updates and notifications via email. Stay informed about appoi
 #### Review Panel
 <img width="1133" alt="Screenshot 2024-02-07 at 12 41 23" src="https://github.com/podgorskip/WellnessHub/assets/115028846/f21f7d71-4674-484b-a404-feca32ff0da2">
 
-#### Question Panel 
+#### Ask Question Panel 
 <img width="1106" alt="Screenshot 2024-02-07 at 12 38 34" src="https://github.com/podgorskip/WellnessHub/assets/115028846/c33ac585-e0cb-435d-983a-4eadfbb04032">
 
 #### Prescription Panel
@@ -86,6 +86,23 @@ Receive important updates and notifications via email. Stay informed about appoi
 
 #### Settings Panel 
 <img width="1102" alt="Screenshot 2024-02-07 at 12 39 08" src="https://github.com/podgorskip/WellnessHub/assets/115028846/921b1774-b564-4710-acbc-63a32b735393">
+
+### For doctors 
+
+#### Account Panel
+<img width="1114" alt="Screenshot 2024-02-07 at 12 50 49" src="https://github.com/podgorskip/WellnessHub/assets/115028846/3909ce50-a700-4390-bff4-fc0581048a84">
+
+#### Manage Visit Panel
+<img width="1100" alt="Screenshot 2024-02-07 at 12 51 10" src="https://github.com/podgorskip/WellnessHub/assets/115028846/c822b1c7-b5f5-46ef-9a04-02a02985bfd6">
+
+#### Scheduled Visits Panel
+<img width="1095" alt="Screenshot 2024-02-07 at 12 51 22" src="https://github.com/podgorskip/WellnessHub/assets/115028846/3b6f82e8-7f8e-4c72-9e47-3a92be5b37ce">
+
+#### Adds Available Slots Panel
+<img width="1116" alt="Screenshot 2024-02-07 at 12 52 07" src="https://github.com/podgorskip/WellnessHub/assets/115028846/40d08217-9467-4068-a7a1-6bb542873f4d">
+
+#### Answer Question Panel
+<img width="1120" alt="Screenshot 2024-02-07 at 12 52 19" src="https://github.com/podgorskip/WellnessHub/assets/115028846/ce335fe5-451a-4994-a28f-720d2ff63c68">
 
 ## Technologies Used
 
