@@ -46,6 +46,47 @@ Access and review your prescriptions conveniently within the platform.
 
 Receive important updates and notifications via email. Stay informed about appointment reminders, specialist responses, and other critical information.
 
+
+## Application Preview 
+
+### Home Page
+<img width="700" alt="home-page" src="https://github.com/podgorskip/WellnessHub/assets/115028846/bfbdf39a-396b-4f7f-bcbe-3397cd76d0cd">
+
+### Sign Up Panel
+<img width="1126" alt="Screenshot 2024-02-07 at 13 18 46" src="https://github.com/podgorskip/WellnessHub/assets/115028846/c50d3c5c-7e22-4932-b89a-df175c56a6be">
+<img width="1128" alt="Screenshot 2024-02-07 at 13 19 01" src="https://github.com/podgorskip/WellnessHub/assets/115028846/c4d9b180-6df5-476f-89b7-f84eca4a4b94">
+
+### SIgn In Panel 
+<img width="1212" alt="sign-in1" src="https://github.com/podgorskip/WellnessHub/assets/115028846/e74653e9-bff1-4443-baed-c19af1c1b24a">
+<img width="1271" alt="sign-in2" src="https://github.com/podgorskip/WellnessHub/assets/115028846/3be349c1-d896-4bb1-b376-9e22f0744b6f">
+
+### Specializations Panel
+<img width="1133" alt="Screenshot 2024-02-07 at 12 39 31" src="https://github.com/podgorskip/WellnessHub/assets/115028846/d52da911-293b-42bb-9e50-22c7f1704227">
+<img width="1140" alt="Screenshot 2024-02-07 at 12 39 52" src="https://github.com/podgorskip/WellnessHub/assets/115028846/8ad26cab-08e3-4605-9085-81e93bf6a1e4">
+
+### Doctors Panel
+<img width="1155" alt="Screenshot 2024-02-07 at 12 40 02" src="https://github.com/podgorskip/WellnessHub/assets/115028846/3626bb7e-d8e0-4f2d-8337-3945e9a19802">
+
+### For Patients
+
+#### Account Panel
+<img width="1394" alt="Screenshot 2024-02-07 at 12 37 59" src="https://github.com/podgorskip/WellnessHub/assets/115028846/61767424-c80c-4ce6-91d9-2f40702dcd38">
+
+#### Appointments Panel
+<img width="1393" alt="Screenshot 2024-02-07 at 12 38 07" src="https://github.com/podgorskip/WellnessHub/assets/115028846/29d6fc92-9c63-403a-be20-e04ae3fd577b">
+
+#### Review Panel
+<img width="1133" alt="Screenshot 2024-02-07 at 12 41 23" src="https://github.com/podgorskip/WellnessHub/assets/115028846/f21f7d71-4674-484b-a404-feca32ff0da2">
+
+#### Question Panel 
+<img width="1106" alt="Screenshot 2024-02-07 at 12 38 34" src="https://github.com/podgorskip/WellnessHub/assets/115028846/c33ac585-e0cb-435d-983a-4eadfbb04032">
+
+#### Prescription Panel
+<img width="1111" alt="Screenshot 2024-02-07 at 12 38 54" src="https://github.com/podgorskip/WellnessHub/assets/115028846/634d2f19-c793-4154-99c9-9634cf9e3573">
+
+#### Settings Panel 
+<img width="1102" alt="Screenshot 2024-02-07 at 12 39 08" src="https://github.com/podgorskip/WellnessHub/assets/115028846/921b1774-b564-4710-acbc-63a32b735393">
+
 ## Technologies Used
 
 ### Backend
